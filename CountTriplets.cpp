@@ -42,13 +42,13 @@ long countTriplets(vector<long> arr, long r) {
     std::map<long, long> counter;
 
     for (int index= 0; index < arr.size(); ++index) {
-        if (backTracker.count(arr[index] / r) == 0) {
+        if (backTracker.count(arr[index] / r) == 0 || arr[index] % r != 0) {
             backTracker[arr[index]].push_back(0);
             counter[arr[index]]= 0;
         }
         else {
             int currentNum= backTracker[arr[index] / r].size();
-            if (backTracker.count(arr[index] / (r * r)) != 0) 
+            if (backTracker.count(arr[index] / (r * r)) != 0 && arr[index] % (r * r) == 0) 
                 count+= counter[arr[index] / r];
 
             backTracker[arr[index]].push_back(currentNum);
@@ -62,7 +62,7 @@ long countTriplets(vector<long> arr, long r) {
     return count;
 }
 
-// shortest solution
+// shorter solution
 long countTriplets(vector<long> arr, long r) {
     long count = 0;
 

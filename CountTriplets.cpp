@@ -61,3 +61,18 @@ long countTriplets(vector<long> arr, long r) {
 
     return count;
 }
+
+// shortest solution
+long countTriplets(vector<long> arr, long r) {
+    long count = 0;
+
+    map<long, long> m1;
+    map<long, long> m2;
+    for (const auto &e : arr) {
+        count += m2[e];
+        m2[e * r] += m1[e];
+        ++m1[e * r];
+    }
+
+    return count;
+}

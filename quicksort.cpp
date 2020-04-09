@@ -9,11 +9,17 @@ quickSort(arr[], low, high) {
 	}
 }
 
-void quickSort(std::vector<int> v) {
+void swap(int &a, int &b) {
+	int temp= a;
+	a= b;
+	b= temp;
+}
+
+void quickSort(std::vector<int> &v) {
 	quickSort(v, 0, v.size() - 1);
 }
 
-void quickSort(std::vector<int> v, int low, int high) {
+void quickSort(std::vector<int> &v, int low, int high) {
 	int pivot{0};
 
 	if (low < high) {
@@ -23,17 +29,11 @@ void quickSort(std::vector<int> v, int low, int high) {
 	}
 }
 
-void swap(int &a, int &b) {
-	int temp= a;
-	a= b;
-	b= temp;
-}
-
-int partition(std::vector<int> arr, int low, int high) {
+int partition(std::vector<int> &arr, int low, int high) {
 	// pivot (element to be placed at right position)
 	int pivot= arr[high];
 	int i= low - 1; // index of smaller element
-	for (int j= low, j < high; ++j) {
+	for (int j= low; j < high; ++j) {
 		// If current element is smaller than the pivot
 		if (arr[j] < pivot) {
 			++i; // increment index of smaller element
@@ -65,4 +65,30 @@ partition(arr[], low, high) {
 
 	swap arr[i + 1] and arr[high]
 	return i + 1;
+}
+
+void quickSort(vector<int> & array, int low, int high) {
+	while (low < high) {
+		int pivot= partition(array, low, high);
+
+		quickSort(array, low, pivot - 1);
+		quickSort(array, pivot + 1, high);
+	}
+}
+
+int partition(vector<int> & array, int low, int high) {
+	int mid= (high - low) / 2,
+		pivot= arr[mid],
+		i= low - 1;
+
+	for (int j= low, j <= high; ++j) {
+		if (arr[j] < pivot) {
+			++i;
+			swap(arr[i], arr[j]);
+		}
+	}
+
+	swap(arr[i + 1], arr[mid]);
+
+	return i +
 }

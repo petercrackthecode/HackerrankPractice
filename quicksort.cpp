@@ -90,5 +90,6 @@ int partition(vector<int> & array, int low, int high) {
 
 	swap(arr[i + 1], arr[mid]);
 
-	return i +
+	return i + 1;
 }
+

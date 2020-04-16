@@ -1,18 +1,3 @@
-void putNumberIntoRightPos(vector<int> &expenditure, int startPos, int endPos) {
-    int traversingIndex= startPos;
-    bool isSorted= false;
-    while (traversingIndex < endPos && !isSorted) {
-        if (expenditure[endPos] <= expenditure[traversingIndex])   {
-            int insertedElem= expenditure[endPos];
-            expenditure.erase(expenditure.begin() + endPos);
-            expenditure.insert(expenditure.begin() + traversingIndex, insertedElem);
-            isSorted= true;
-        }
-
-        ++traversingIndex;
-    }
-}
-
 void countingSort(std::vector<int> &expenditures, int startPos, int endPos) {
     std::vector<int> count(201, 0);
     
@@ -92,19 +77,18 @@ int findDoubledMediumExpenditure(std::vector<int> count, int days, bool areDaysE
 // Complete the activityNotifications function below.
 int activityNotifications(std::vector<int> expenditure, int d) {
     int notifications{0},
-        smallestExpenditure{0},
-        currentMedium= 0;
+        currentMediumIndex= 0,
+        expenditureOrder{0};
     std::vector<int> count(201, 0);
     bool areDaysEven= d % 2 == 0 ? true : false;
 
     for (int index= 0; index <= expenditure.size() - d; ++index) {
-        // double medium= getMedium(expenditure, index, index + d - 1);
         if (index == 0) {
             for (int i= index; i < index + d) {
-                ++count[i];
+                ++count[expenditure[i]];
             }
-            smallestExpenditure= findSmallestExpenditure(count);
         }
+        else ++count[expenditure[index + d - 1]];
 
         if (expenditure[index + d] >= medium * 2)
             ++notifications;

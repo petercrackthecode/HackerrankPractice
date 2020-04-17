@@ -1,67 +1,64 @@
-void countingSort(std::vector<int> &expenditures, int startPos, int endPos) {
-    std::vector<int> count(201, 0);
-    
-    for (int index= startPos; index <= endPos; ++index) {
-        ++count[expenditures[index]];
-    }
-    
-    int countIndex{0},
-        expenditureIndex{startPos};
-    
-    while (expenditureIndex <= endPos) {
-        while (count[countIndex] > 0) {
-            expenditures[expenditureIndex]= countIndex;
-            ++expenditureIndex;
-            --count[countIndex];
-        }
-        ++countIndex;
-    }
-}
+int getTwiceMedian(vector<int> &A, vector<int> &count, int d) {
+    vector<int> countFrequencies(count);
 
-int findClosestLargerIndex(std::vector<int> count, int index) {
-    for (int traversal= index + 1; traversal <= 200; ++traversal) {
-        if (count[traversal] > 0) {
-            return traversal;
-        }
+    for (int i= 1; i < countFrequencies.size(); ++i) { // O(1);
+        countFrequencies[i]+= countFrequencies[i - 1];
     }
 
-    return 200;
-}
+    int median,
+        a{0},
+        b{0};
 
-int findClosestSmallerIndex(std::vector<int> count; int index) {
-    for (int traversal= index - 1; traversal >= 0; --traversal) {
-        if (count[traversal] > 0) {
-            return traversal;
-        }
-    }
-}
+    // d is even -> median= a + b
+    if (d % 2 == 0) {
+        int first= d / 2;
+        int second= first + 1;
+        int i{0};
 
-int findDoubledMediumExpenditure(std::vector<int> count, int days, bool areDaysEven, int &expenditureOrder, int &currentMediumInCount) {
-    if (currentMediumInCount == -1) {
-
-    }
-    
-}
-
-// Complete the activityNotifications function below.
-int activityNotifications(std::vector<int> expenditure, int d) {
-    int notifications{0},
-        currentMediumInCount{-1},
-        expenditureOrder{0};
-    std::vector<int> count(201, 0);
-    bool areDaysEven= d % 2 == 0 ? true : false;
-
-    for (int index= 0; index <= expenditure.size() - d; ++index) {
-        if (index == 0) {
-            for (int i= index; i < index + d) {
-                ++count[expenditure[i]];
+        for (; i < 200; ++i) {
+            if (first <= countFrequencies[i]) {
+                a= i;
+                break;
             }
         }
-        else ++count[expenditure[index + d - 1]];
 
-        if (expenditure[index + d] >= medium * 2)
-            ++notifications;
+        for (; i < 201; ++i) {
+            if (second <= countFrequencies[i]) {
+                b= i;
+                break;
+            }
+        }
+    }
+    else { // d is odd -> median = a + 0 = 2 * (middle elem)
+        int first= d / 2 + 1;
+        for (int i= 0; i < 201; ++i) {
+            if (first <= countFrequencies[i]) {
+                a= 2 * i;
+                break;
+            }
+        }
+    }
+    median= a + b;
+    return median;
+}
+
+int activityNotifications(vector<int> A, int d) {
+    int alerts{0};
+    vector<int> count(201, 0); // stores count of last 'd' numbers
+    int n= A.size();
+
+    for (int i= 0; i < d; ++i) {
+        ++count[A[i]];
     }
 
-    return notifications;
+    for (int i= d; i < n; ++i) {
+        int twiceMedian= getTwiceMedian(A, count, d);
+        if (A[i] >= twiceMedian) ++alerts;
+
+        // update count array
+        ++count[A[i]];
+        --count[A[i - d]];
+    }
+
+    return alerts;
 }

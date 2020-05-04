@@ -1,12 +1,34 @@
-/* low --> Starting index, high --> Ending index */
-quickSort(arr[], low, high) {
-	if (low < high) {
-		/* pi is partitioning index, arr[pi] is now at right place */
-		pi= partition(arr, low, high);
+void quickSort(std::vector<int> &arr, const int &low, const int &high);
+void quickSort(std::vector<int> &arr);
+void swap(int &a, int &b);
+int partition(std::vector<int> &arr, const int &low, const int &high);
 
-		quickSort(arr, low, pi - 1); // Before pi
-		quickSort(arr, pi + 1, high); // after pi
+void quickSort(std::vector<int> &arr, const int &low, const int &high) {
+	if (low < high) {
+		int pivotPosition= partition(arr, low, high);
+		quickSort(arr, low, pivotPosition - 1);
+		quickSort(arr, pivotPosition + 1, high);
 	}
+}
+
+void quickSort(std::vector<int> &arr) {
+	quickSort(arr, 0, arr.size() - 1);
+}
+
+int partition(std::vector<int> &arr, const int &low, const int &high) {
+	int pivot= arr[high];
+	int i{ low - 1};
+
+	for (int j= low; j < high; ++j) {
+		if (arr[j] < pivot) {
+			++i;
+			swap(arr[i], arr[j]);
+		}
+	}
+
+	swap(arr[i + 1], arr[high]);
+
+	return i + 1;
 }
 
 void swap(int &a, int &b) {
@@ -14,82 +36,3 @@ void swap(int &a, int &b) {
 	a= b;
 	b= temp;
 }
-
-void quickSort(std::vector<int> &v) {
-	quickSort(v, 0, v.size() - 1);
-}
-
-void quickSort(std::vector<int> &v, int low, int high) {
-	int pivot{0};
-
-	if (low < high) {
-		pivot= partition(arr, low, high);
-		quickSort(arr, low, pivot - 1); // before pivot
-		quickSort(arr, pivot + 1, high);
-	}
-}
-
-int partition(std::vector<int> &arr, int low, int high) {
-	// pivot (element to be placed at right position)
-	int pivot= arr[high];
-	int i= low - 1; // index of smaller element
-	for (int j= low; j < high; ++j) {
-		// If current element is smaller than the pivot
-		if (arr[j] < pivot) {
-			++i; // increment index of smaller element
-			swap(arr[i], arr[j]);
-		}
-	}
-
-	swap(arr[i + 1], arr[high]);
-	return i + 1;
-}
-
-/*
-*	This function takes last element as pivot, places the pivot element at its correct position in sorted array
-	, and places all smaller (smaller than pivot) to left of pivot and all greater elements to right
-	of pivot
-*/
-
-partition(arr[], low, high) {
-	// pivot (Element to be placed at right position)
-	pivot= arr[high];
-	i= low - 1; // index of smaller element
-	for (j= low; j <= high - 1; ++j) {
-		// If current element is smaller than the pivot
-		if (arr[j] < pivot) {
-			++i; // increment index of smaller element
-			swap arr[i] and arr[j]
-		}
-	}
-
-	swap arr[i + 1] and arr[high]
-	return i + 1;
-}
-
-void quickSort(vector<int> & array, int low, int high) {
-	while (low < high) {
-		int pivot= partition(array, low, high);
-
-		quickSort(array, low, pivot - 1);
-		quickSort(array, pivot + 1, high);
-	}
-}
-
-int partition(vector<int> & array, int low, int high) {
-	int mid= (high - low) / 2,
-		pivot= arr[mid],
-		i= low - 1;
-
-	for (int j= low, j <= high; ++j) {
-		if (arr[j] < pivot) {
-			++i;
-			swap(arr[i], arr[j]);
-		}
-	}
-
-	swap(arr[i + 1], arr[mid]);
-
-	return i + 1;
-}
-

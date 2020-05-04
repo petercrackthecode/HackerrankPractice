@@ -1,63 +1,80 @@
-int getTwiceMedian(vector<int> &A, vector<int> &count, int d) {
-    vector<int> countFrequencies(count);
-
-    for (int i= 1; i < countFrequencies.size(); ++i) { // O(1);
-        countFrequencies[i]+= countFrequencies[i - 1];
+int findNextMiddle(const std::vector<int> &count, const int &first, int &currentMedianLevel) {
+    if (count[first] > currentMedianLevel) {
+        ++currentMedianLevel;
+        return first;
     }
-
-    int median,
-        a{0},
-        b{0};
-
-    // d is even -> median= a + b
-    if (d % 2 == 0) {
-        int first= d / 2;
-        int second= first + 1;
-        int i{0};
-
-        for (; i < 200; ++i) {
-            if (first <= countFrequencies[i]) {
-                a= i;
-                break;
-            }
+    else {
+        int index= first + 1;
+        while (count[index] != 0) {
+            ++index;
         }
-
-        for (; i < 201; ++i) {
-            if (second <= countFrequencies[i]) {
-                b= i;
-                break;
-            }
-        }
+        currentMedianLevel= 1;
+        return count[index];
     }
-    else { // d is odd -> median = a + 0 = 2 * (middle elem)
-        int first= d / 2 + 1;
-        for (int i= 0; i < 201; ++i) {
-            if (first <= countFrequencies[i]) {
-                a= 2 * i;
-                break;
-            }
-        }
-    }
-    median= a + b;
-    return median;
 }
 
-int activityNotifications(vector<int> A, int d) {
-    int alerts{0};
-    vector<int> count(201, 0); // stores count of last 'd' numbers
-    int n= A.size();
+int getTwiceMedian(const std::vector<int> &count, const int &days, int &currentMid, int &currentMedianLevel) {
+    int first{0},
+        second{0},
+        twiceMedian{0};
 
-    for (int i= 0; i < d; ++i) {
+    if (currentMid < 0 || currentMedianLevel <= 0) { // the median has never been initialized
+        int index= 0,
+            daysTracer{0};
+        while (daysTracer < days / 2) { // iterate to the median element in the real array
+            if (count[index] != 0) {
+                if (daysTracer + count[index] >= days / 2) {
+                    first= index;
+                    currentMedianLevel= days / 2 - daysTracer;
+                    daysTracer= days / 2;
+                }
+                else {
+                    daysTracer+= count[index];
+                }
+            }
+
+            ++index;
+        }
+
+        if (days % 2 == 0) { // if the number of days is odd, find the second middle number.
+            second= findNextMiddle(count, first, currentMedianLevel);
+        }
+    }
+    else {
+        if (days % 2 == 1) {
+            first= findNextMiddle(count, currentMid, currentMedianLevel);
+        }
+        else {
+            first= findNextMiddle(count, currentMid, currentMedianLevel);
+            second= findNextMiddle(count, first, currentMedianLevel);
+        }
+    }
+
+    currentMid= first;
+    twiceMedian= (second == 0) ? first * 2 : first + second;
+
+    return twiceMedian;
+}
+
+int activityNotifications(std::vector<int> A, int days) {
+    int alerts{0};
+    std::vector<int> count(201, 0); // stores count of last 'd' numbers
+    int n= A.size(),
+        currentMedian{-1}, currentMedianLevel{0};
+
+    for (int i= 0; i < days; ++i) {
         ++count[A[i]];
     }
 
-    for (int i= d; i < n; ++i) {
-        int twiceMedian= getTwiceMedian(A, count, d);
+
+
+    for (int i= days; i < n; ++i) {
+        int twiceMedian= getTwiceMedian(count, days, currentMedian, currentMedianLevel);
         if (A[i] >= twiceMedian) ++alerts;
 
         // update count array
         ++count[A[i]];
-        --count[A[i - d]];
+        --count[A[i - days]];
     }
 
     return alerts;
